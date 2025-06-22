@@ -58,7 +58,7 @@ class App {
   async renderPage() {
     this._updateLoginLogoutButton();
     const url = getActiveRoute();
-    const page = routes[url] || routes['/'];
+    const page = routes[url] || routes['/not-found'];
 
     // View Transition API
     if (document.startViewTransition) {

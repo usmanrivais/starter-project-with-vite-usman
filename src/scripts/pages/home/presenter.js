@@ -1,11 +1,13 @@
 import L from 'leaflet';
 import CONFIG from '../../config';
+import NotificationHelper from '../../utils/notification-helper';
 
 export default class HomePagePresenter {
     constructor({ view, model }) {
         this._view = view;
         this._model = model;
         this._map = null;
+        this._setupNotificationButton();
     }
 
     async getStories() {
@@ -31,6 +33,17 @@ export default class HomePagePresenter {
             if (story.lat && story.lon) {
                 L.marker([story.lat, story.lon]).addTo(this._map)
                     .bindPopup(`<b>${story.name}</b><br>${story.description.substring(0, 30)}...`);
+            }
+        });
+    }
+    _setupNotificationButton() {
+        // Menunggu DOM siap sebelum menambahkan event listener
+        document.addEventListener('DOMContentLoaded', () => {
+            const subscribeButton = document.querySelector('#subscribeButton');
+            if (subscribeButton) {
+                subscribeButton.addEventListener('click', async () => {
+                    await NotificationHelper.subscribe();
+                });
             }
         });
     }
