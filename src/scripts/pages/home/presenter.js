@@ -10,9 +10,8 @@ export default class HomePagePresenter {
     }
 
     async getStories() {
-        // Panggil setup notifikasi di sini, karena method ini dijamin
-        // berjalan setelah halaman di-render (dari afterRender di View)
-        this._setupNotificationButton();
+        // Panggil setup notifikasi di sini
+        await this._setupNotificationFeature();
 
         try {
             const stories = await this._model.getAllStories();
@@ -23,19 +22,13 @@ export default class HomePagePresenter {
         }
     }
 
+    // ... (method _initializeMap tetap sama) ...
     _initializeMap(stories) {
-        // Cek jika map sudah diinisialisasi
-        if (this._map) {
-            this._map.remove();
-        }
+        if (this._map) this._map.remove();
         this._map = L.map('story-map').setView([-2.5489, 118.0149], 5);
-
         L.tileLayer(CONFIG.MAP_TILE_URL, {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap contributors',
-            apiKey: CONFIG.MAP_API_KEY
+            maxZoom: 19, attribution: '© OpenStreetMap contributors', apiKey: CONFIG.MAP_API_KEY
         }).addTo(this._map);
-
         stories.forEach(story => {
             if (story.lat && story.lon) {
                 L.marker([story.lat, story.lon]).addTo(this._map)
@@ -44,16 +37,42 @@ export default class HomePagePresenter {
         });
     }
 
-    // --- METHOD YANG DIPERBAIKI ---
-    _setupNotificationButton() {
+    // --- LOGIKA NOTIFIKASI YANG DIPERBARUI ---
+    async _setupNotificationFeature() {
         const subscribeButton = document.querySelector('#subscribeButton');
+        if (!subscribeButton) return;
 
-        // Periksa jika tombol sudah ada event listener untuk mencegah duplikasi
-        if (subscribeButton && !subscribeButton.hasAttribute('data-listener-added')) {
+        // Cek status langganan saat ini dan perbarui UI
+        const isSubscribed = await NotificationHelper.isSubscribed();
+        this._updateNotificationButtonUI(isSubscribed);
+
+        // Tambahkan event listener sekali saja
+        if (!subscribeButton.hasAttribute('data-listener-added')) {
             subscribeButton.addEventListener('click', async () => {
-                await NotificationHelper.subscribe();
+                const currentState = await NotificationHelper.isSubscribed();
+                if (currentState) {
+                    await NotificationHelper.unsubscribe();
+                } else {
+                    await NotificationHelper.subscribe();
+                }
+                // Perbarui UI lagi setelah aksi
+                const newState = await NotificationHelper.isSubscribed();
+                this._updateNotificationButtonUI(newState);
             });
             subscribeButton.setAttribute('data-listener-added', 'true');
+        }
+    }
+
+    _updateNotificationButtonUI(isSubscribed) {
+        const subscribeButton = document.querySelector('#subscribeButton');
+        if (!subscribeButton) return;
+
+        if (isSubscribed) {
+            subscribeButton.textContent = 'Berhenti Berlangganan';
+            subscribeButton.style.backgroundColor = '#e74c3c'; // Warna merah
+        } else {
+            subscribeButton.textContent = 'Berlangganan Notifikasi';
+            subscribeButton.style.backgroundColor = '#2ecc71'; // Warna hijau
         }
     }
 }
