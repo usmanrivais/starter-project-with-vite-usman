@@ -7,10 +7,13 @@ export default class HomePagePresenter {
         this._view = view;
         this._model = model;
         this._map = null;
-        this._setupNotificationButton();
     }
 
     async getStories() {
+        // Panggil setup notifikasi di sini, karena method ini dijamin
+        // berjalan setelah halaman di-render (dari afterRender di View)
+        this._setupNotificationButton();
+
         try {
             const stories = await this._model.getAllStories();
             this._view.showStories(stories);
@@ -21,7 +24,11 @@ export default class HomePagePresenter {
     }
 
     _initializeMap(stories) {
-        this._map = L.map('story-map').setView([-2.5489, 118.0149], 5); // Center of Indonesia
+        // Cek jika map sudah diinisialisasi
+        if (this._map) {
+            this._map.remove();
+        }
+        this._map = L.map('story-map').setView([-2.5489, 118.0149], 5);
 
         L.tileLayer(CONFIG.MAP_TILE_URL, {
             maxZoom: 19,
@@ -36,15 +43,17 @@ export default class HomePagePresenter {
             }
         });
     }
+
+    // --- METHOD YANG DIPERBAIKI ---
     _setupNotificationButton() {
-        // Menunggu DOM siap sebelum menambahkan event listener
-        document.addEventListener('DOMContentLoaded', () => {
-            const subscribeButton = document.querySelector('#subscribeButton');
-            if (subscribeButton) {
-                subscribeButton.addEventListener('click', async () => {
-                    await NotificationHelper.subscribe();
-                });
-            }
-        });
+        const subscribeButton = document.querySelector('#subscribeButton');
+
+        // Periksa jika tombol sudah ada event listener untuk mencegah duplikasi
+        if (subscribeButton && !subscribeButton.hasAttribute('data-listener-added')) {
+            subscribeButton.addEventListener('click', async () => {
+                await NotificationHelper.subscribe();
+            });
+            subscribeButton.setAttribute('data-listener-added', 'true');
+        }
     }
 }
