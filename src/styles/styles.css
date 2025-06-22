@@ -314,3 +314,48 @@ footer {
     display: none;
   }
 }
+
+/* Tambahkan gaya ini di mana saja di dalam file styles.css */
+
+.button-subscribe {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: #2ecc71; /* Warna hijau untuk subscribe */
+  color: white;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.button-subscribe.subscribed {
+  background-color: #e74c3c; /* Warna merah untuk unsubscribe */
+}
+
+/* Penyesuaian untuk tampilan desktop */
+@media screen and (min-width: 1000px) {
+  /* ... aturan lain ... */
+
+  .button-subscribe {
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+  }
+
+  .button-subscribe:hover {
+    background-color: white;
+    color: #3498db;
+  }
+
+  .button-subscribe.subscribed {
+    background-color: #c0392b; /* Merah lebih gelap untuk state subscribed di desktop */
+    border-color: #c0392b;
+  }
+  .button-subscribe.subscribed:hover {
+    background-color: white;
+    color: #c0392b;
+  }
+}
+
+.button-subscribe i {
+  margin-right: 8px; /* Memberi jarak antara ikon dan teks */

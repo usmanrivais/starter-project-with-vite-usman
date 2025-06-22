@@ -1,6 +1,5 @@
 import L from 'leaflet';
 import CONFIG from '../../config';
-import NotificationHelper from '../../utils/notification-helper';
 
 export default class HomePagePresenter {
     constructor({ view, model }) {
@@ -10,9 +9,6 @@ export default class HomePagePresenter {
     }
 
     async getStories() {
-        // Panggil setup notifikasi di sini
-        await this._setupNotificationFeature();
-
         try {
             const stories = await this._model.getAllStories();
             this._view.showStories(stories);
@@ -35,44 +31,5 @@ export default class HomePagePresenter {
                     .bindPopup(`<b>${story.name}</b><br>${story.description.substring(0, 30)}...`);
             }
         });
-    }
-
-    // --- LOGIKA NOTIFIKASI YANG DIPERBARUI ---
-    async _setupNotificationFeature() {
-        const subscribeButton = document.querySelector('#subscribeButton');
-        if (!subscribeButton) return;
-
-        // Cek status langganan saat ini dan perbarui UI
-        const isSubscribed = await NotificationHelper.isSubscribed();
-        this._updateNotificationButtonUI(isSubscribed);
-
-        // Tambahkan event listener sekali saja
-        if (!subscribeButton.hasAttribute('data-listener-added')) {
-            subscribeButton.addEventListener('click', async () => {
-                const currentState = await NotificationHelper.isSubscribed();
-                if (currentState) {
-                    await NotificationHelper.unsubscribe();
-                } else {
-                    await NotificationHelper.subscribe();
-                }
-                // Perbarui UI lagi setelah aksi
-                const newState = await NotificationHelper.isSubscribed();
-                this._updateNotificationButtonUI(newState);
-            });
-            subscribeButton.setAttribute('data-listener-added', 'true');
-        }
-    }
-
-    _updateNotificationButtonUI(isSubscribed) {
-        const subscribeButton = document.querySelector('#subscribeButton');
-        if (!subscribeButton) return;
-
-        if (isSubscribed) {
-            subscribeButton.textContent = 'Berhenti Berlangganan';
-            subscribeButton.style.backgroundColor = '#e74c3c'; // Warna merah
-        } else {
-            subscribeButton.textContent = 'Berlangganan Notifikasi';
-            subscribeButton.style.backgroundColor = '#2ecc71'; // Warna hijau
-        }
     }
 }

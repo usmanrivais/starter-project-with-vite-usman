@@ -15,11 +15,6 @@ export default class HomePage {
         return `
       <section class="container">
         <h2>Daftar Cerita</h2>
-        <div class="notification-subscribe">
-          <button id="subscribeButton" class="button" style="width: auto; background-color: #2ecc71;">
-            Berlangganan Notifikasi
-          </button>
-        </div>
         <div id="story-map" style="margin-top:20px;"></div>
         <div id="stories-list" class="loading">Memuat cerita...</div>
       </section>
