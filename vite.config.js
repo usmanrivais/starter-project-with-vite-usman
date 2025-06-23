@@ -2,7 +2,6 @@ import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa'; // <-- Import plugin
 import { resolve } from 'path';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   root: resolve(__dirname, 'src'),
   publicDir: resolve(__dirname, 'src', 'public'),
@@ -15,10 +14,8 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
-  // --- TAMBAHKAN KONFIGURASI PLUGIN DI SINI ---
   plugins: [
     VitePWA({
-      // Konfigurasi ini akan meng-generate file manifest.json untuk kita
       manifest: {
         name: 'Story App',
         short_name: 'StoryApp',
@@ -39,7 +36,6 @@ export default defineConfig({
             type: 'image/png',
           },
         ],
-        // Opsi dari kriteria opsional
         screenshots: [
           {
             src: '/screenshots/screenshot-desktop-1.png',
@@ -65,34 +61,29 @@ export default defineConfig({
           }
         ]
       },
-      // Konfigurasi Workbox untuk Caching
       workbox: {
-        // Aturan untuk pre-caching App Shell (file statis)
         globPatterns: ['**/*.{js,css,html,png,jpg}'],
 
-        // Aturan untuk runtime caching (data dinamis dari API)
         runtimeCaching: [
           {
-            // Aturan untuk caching data dari Story API
             urlPattern: ({ url }) => url.href.startsWith('https://story-api.dicoding.dev/v1/'),
-            handler: 'NetworkFirst', // Coba jaringan dulu, jika gagal baru ambil dari cache
+            handler: 'NetworkFirst',
             options: {
               cacheName: 'story-api-cache',
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 7, // 1 Minggu
+                maxAgeSeconds: 60 * 60 * 24 * 7,
               },
             },
           },
           {
-            // Aturan untuk caching gambar cerita
             urlPattern: ({ url }) => url.href.startsWith('https://story-api.dicoding.dev/images/stories/'),
-            handler: 'CacheFirst', // Ambil dari cache dulu, jika tidak ada baru ke jaringan
+            handler: 'CacheFirst',
             options: {
               cacheName: 'story-image-cache',
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Hari
+                maxAgeSeconds: 60 * 60 * 24 * 30,
               },
             },
           },

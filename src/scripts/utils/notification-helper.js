@@ -1,6 +1,5 @@
 import AuthHelper from './auth-helper';
 
-// Fungsi urlBase64ToUint8Array tetap sama
 const urlBase64ToUint8Array = (base64String) => {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
     const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -13,7 +12,6 @@ const urlBase64ToUint8Array = (base64String) => {
 };
 
 const NotificationHelper = {
-    // FUNGSI BARU: Untuk mengecek status langganan
     async isSubscribed() {
         const serviceWorker = await navigator.serviceWorker.ready;
         const subscription = await serviceWorker.pushManager.getSubscription();
@@ -45,15 +43,12 @@ const NotificationHelper = {
         }
     },
 
-    // FUNGSI BARU: Untuk berhenti berlangganan
     async unsubscribe() {
         try {
             const serviceWorker = await navigator.serviceWorker.ready;
             const subscription = await serviceWorker.pushManager.getSubscription();
             if (subscription) {
-                // Kirim permintaan unsubscribe ke server terlebih dahulu
                 await this._sendUnsubscriptionToServer(subscription);
-                // Kemudian batalkan langganan dari sisi browser
                 await subscription.unsubscribe();
                 console.log('Berhasil berhenti berlangganan notifikasi!');
             }
@@ -63,7 +58,6 @@ const NotificationHelper = {
         }
     },
 
-    // Method untuk mengirim data subscribe
     async _sendSubscriptionToServer(subscription) {
         const subscriptionData = subscription.toJSON();
         const dataToSend = {
@@ -80,7 +74,6 @@ const NotificationHelper = {
         });
     },
 
-    // Method untuk mengirim data unsubscribe
     async _sendUnsubscriptionToServer(subscription) {
         const subscriptionData = subscription.toJSON();
         await fetch('https://story-api.dicoding.dev/v1/notifications/subscribe', {

@@ -34,7 +34,6 @@ export default class LoginPage {
     }
 
     async afterRender() {
-        // Jika sudah login, langsung arahkan ke halaman utama
         if (AuthHelper.isLoggedIn()) {
             window.location.hash = '#/';
             return;

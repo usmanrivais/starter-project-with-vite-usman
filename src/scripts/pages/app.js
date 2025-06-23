@@ -58,7 +58,7 @@ class App {
 
   async renderPage() {
     this._updateLoginLogoutButton();
-    await this.#setupNotificationFeature(); // <-- PANGGIL FUNGSI BARU DI SINI
+    await this.#setupNotificationFeature();
 
     const url = getActiveRoute();
     const page = routes[url] || routes['/not-found'];
@@ -77,17 +77,13 @@ class App {
     cameraHelper.stopCameraStream();
   }
 
-  // --- METHOD BARU UNTUK LOGIKA NOTIFIKASI ---
   async #setupNotificationFeature() {
-    // Tombol hanya akan berfungsi jika user sudah login
     if (!AuthHelper.isLoggedIn()) {
-      // Sembunyikan tombol jika belum login
       const subscribeButtonContainer = document.querySelector('.nav-item-subscribe');
       if (subscribeButtonContainer) subscribeButtonContainer.style.display = 'none';
       return;
     }
 
-    // Tampilkan tombol jika sudah login
     const subscribeButtonContainer = document.querySelector('.nav-item-subscribe');
     if (subscribeButtonContainer) subscribeButtonContainer.style.display = 'list-item';
 
@@ -117,16 +113,15 @@ class App {
     const notificationIcon = document.querySelector('#notification-icon');
     const notificationText = document.querySelector('#notification-text');
 
-    // Pastikan semua elemen ada sebelum mengubahnya
     if (!subscribeButton || !notificationIcon || !notificationText) return;
 
     if (isSubscribed) {
       subscribeButton.classList.add('subscribed');
-      notificationIcon.className = 'fas fa-bell-slash'; // Ikon lonceng dicoret
+      notificationIcon.className = 'fas fa-bell-slash';
       notificationText.textContent = 'Unsubscribe';
     } else {
       subscribeButton.classList.remove('subscribed');
-      notificationIcon.className = 'fas fa-bell'; // Ikon lonceng normal
+      notificationIcon.className = 'fas fa-bell';
       notificationText.textContent = 'Subscribe';
     }
   }

@@ -1,2 +1,2 @@
-APP_URL=<https://story-api.dicoding.dev/v1>
+APP_URL=<https://wondrous-kringle-4f9f09.netlify.app/#/>
 MAP_SERVICE_API_KEY=<7nlLEWqtMT29kxLwmQzB>

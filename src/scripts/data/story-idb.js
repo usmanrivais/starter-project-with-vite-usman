@@ -6,7 +6,6 @@ const OBJECT_STORE_NAME = 'stories';
 
 const dbPromise = openDB(DATABASE_NAME, DATABASE_VERSION, {
     upgrade(database) {
-        // Buat object store jika belum ada
         database.createObjectStore(OBJECT_STORE_NAME, { keyPath: 'id' });
     },
 });
