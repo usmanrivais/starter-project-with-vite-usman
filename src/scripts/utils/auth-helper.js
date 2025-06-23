@@ -1,18 +1,22 @@
 const AuthHelper = {
     isLoggedIn() {
-        return !!sessionStorage.getItem('userToken');
+        // Menggunakan localStorage
+        return !!localStorage.getItem('userToken');
     },
 
     getToken() {
-        return sessionStorage.getItem('userToken');
+        // Menggunakan localStorage
+        return localStorage.getItem('userToken');
     },
 
     setToken(token) {
-        sessionStorage.setItem('userToken', token);
+        // Menggunakan localStorage
+        localStorage.setItem('userToken', token);
     },
 
     removeToken() {
-        sessionStorage.removeItem('userToken');
+        // Menggunakan localStorage
+        localStorage.removeItem('userToken');
     },
 };
 
