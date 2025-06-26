@@ -7,6 +7,7 @@ const createStoryItemTemplate = (story) => `
       <h3 class="story-item__title">${story.name}</h3>
       <p class="story-item__description">${story.description}</p>
       <span class="story-item__date">${showFormattedDate(story.createdAt)}</span>
+      <button class="button-save" data-id="${story.id}">Simpan ke Favorit</button>
     </div>
   </article>
 `;

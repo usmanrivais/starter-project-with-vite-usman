@@ -61,34 +61,10 @@ export default defineConfig({
           }
         ]
       },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,png,jpg}'],
-
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) => url.href.startsWith('https://story-api.dicoding.dev/v1/'),
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'story-api-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 7,
-              },
-            },
-          },
-          {
-            urlPattern: ({ url }) => url.href.startsWith('https://story-api.dicoding.dev/images/stories/'),
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'story-image-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 30,
-              },
-            },
-          },
-        ],
-      },
+        // Menggunakan strategi InjectManifest
+      strategies: 'injectManifest',
+      srcDir: 'src', // Lokasi file sw.js sumber kita
+      filename: 'sw.js', // Nama file service worker final
     }),
   ],
 });

@@ -7,35 +7,35 @@ export default class HomePagePresenter {
         this._view = view;
         this._model = model;
         this._map = null;
+        this._stories = [];
+        this._setupSaveListener();
     }
 
     async getStories() {
         this._setupNotificationFeature();
 
         try {
-            const storiesFromIdb = await StoryIdb.getAllStories();
-            if (storiesFromIdb.length > 0) {
-                console.log('Menampilkan data dari IndexedDB');
-                this._view.showStories(storiesFromIdb);
-                this._initializeMap(storiesFromIdb);
-            }
-
-            console.log('Mengambil data baru dari API...');
-            const storiesFromApi = await this._model.getAllStories();
-
-            await StoryIdb.putAllStories(storiesFromApi);
-
-            console.log('Menampilkan data dari API & memperbarui IndexedDB');
-            this._view.showStories(storiesFromApi);
-            this._initializeMap(storiesFromApi);
-
+            const stories = await this._model.getAllStories();
+            this._stories = stories; // Simpan data
+            this._view.showStories(stories);
+            this._initializeMap(stories);
         } catch (error) {
-            console.error('Gagal mengambil data dari API, menampilkan data dari IndexedDB jika ada.', error);
-            const storiesFromIdb = await StoryIdb.getAllStories();
-            if (storiesFromIdb.length < 1) {
-                this._view.showError(error.message);
-            }
+            this._view.showError(error.message);
         }
+    }
+
+    _setupSaveListener() {
+        document.body.addEventListener('click', async (event) => {
+            if (event.target.classList.contains('button-save')) {
+                event.stopPropagation();
+                const storyId = event.target.dataset.id;
+                const storyToSave = this._stories.find(story => story.id === storyId);
+                if (storyToSave) {
+                    await StoryIdb.putStory(storyToSave);
+                    alert('Cerita berhasil disimpan ke favorit!');
+                }
+            }
+        });
     }
 
     _initializeMap(stories) {
