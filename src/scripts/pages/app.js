@@ -72,9 +72,6 @@ class App {
       this.#content.innerHTML = await page.render();
       await page.afterRender();
     }
-
-    const cameraHelper = (await import('../utils/camera-helper')).default;
-    cameraHelper.stopCameraStream();
   }
 
   async #setupNotificationFeature() {

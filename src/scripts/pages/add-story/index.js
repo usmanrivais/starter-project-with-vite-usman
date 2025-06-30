@@ -20,7 +20,7 @@ export default class AddStoryPage {
           <h2>Tambah Cerita Baru</h2>
           <form id="addStoryForm">
             <div class="form-group">
-              <label for="description">Caption</label>
+              <label for="description">Deskripsi</label>
               <textarea id="description" name="description" required></textarea>
             </div>
             
